@@ -7,7 +7,7 @@
         <AssemblyName>KillDNS.CaptchaSolver.Connectors.InMemory</AssemblyName>
         <RootNamespace>KillDNS.CaptchaSolver.Connectors.InMemory</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.0.1</Version>
+        <Version>0.0.2</Version>
         <Title>KillDNS.CaptchaSolver.Connectors.InMemory</Title>
         <Authors>Kirill Danshin</Authors>
         <Description>Library for process captcha in same application.</Description>
@@ -15,7 +15,7 @@
         <PackageLicenseUrl>https://raw.githubusercontent.com/KillDNS-Captcha-Solver/connector-in-memory/master/LICENSE</PackageLicenseUrl>
         <PackageIcon>logo_128.png</PackageIcon>
         <RepositoryUrl>https://github.com/KillDNS-Captcha-Solver/connector-in-memory</RepositoryUrl>
-        <AssemblyVersion>0.0.1</AssemblyVersion>
+        <AssemblyVersion>0.0.2</AssemblyVersion>
     </PropertyGroup>
 
     <ItemGroup>
