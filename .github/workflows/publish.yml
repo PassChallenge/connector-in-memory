@@ -1,18 +1,24 @@
 name: publish to nuget
 on:
-  push:
-    tags:        
-      - '*'
+  release:
+    types:
+      - published
 jobs:
   publish:
     name: build, pack & publish
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     steps:
-      - uses: actions/checkout@v2
-      - name: publish on version change
-        id: publish_nuget
-        uses: brandedoutcast/publish-nuget@v2
-        with:
-          PROJECT_FILE_PATH: src/KillDNS.CaptchaSolver.Connectors.InMemory.csproj
-          PACKAGE_NAME: KillDNS.CaptchaSolver.Connectors.InMemory
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build
+        run: dotnet build --configuration Release
+      - name: Create the package
+        run: dotnet pack --configuration Release
+      - name: Publish the package to GPR
+        run: dotnet nuget push src/bin/Release/*.nupkg -s $NUGET_SRC_URL -k $NUGET_API_KEY --skip-duplicate --no-symbols
+        env:
+          NUGET_SRC_URL: https://api.nuget.org/v3/index.json
+          NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}

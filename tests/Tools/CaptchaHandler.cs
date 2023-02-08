@@ -2,7 +2,7 @@ using KillDNS.CaptchaSolver.Core.Captcha;
 using KillDNS.CaptchaSolver.Core.Handlers;
 using KillDNS.CaptchaSolver.Core.Solutions;
 
-namespace KillDNS.CaptchaSolver.Connectors.InMemory.Tests;
+namespace KillDNS.CaptchaSolver.Connectors.InMemory.Tests.Tools;
 
 public class CaptchaHandler : ICaptchaHandler<PictureCaptcha, TextSolution>
 {

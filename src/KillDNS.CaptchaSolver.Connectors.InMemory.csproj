@@ -7,30 +7,40 @@
         <AssemblyName>KillDNS.CaptchaSolver.Connectors.InMemory</AssemblyName>
         <RootNamespace>KillDNS.CaptchaSolver.Connectors.InMemory</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>0.0.2</Version>
+        <Version>0.0.3</Version>
         <Title>KillDNS.CaptchaSolver.Connectors.InMemory</Title>
         <Authors>Kirill Danshin</Authors>
         <Description>Library for process captcha in same application.</Description>
-        <Copyright>Copyright (c) 2023 Kirill Danshin</Copyright>
-        <PackageLicenseUrl>https://raw.githubusercontent.com/KillDNS-Captcha-Solver/connector-in-memory/master/LICENSE</PackageLicenseUrl>
         <PackageIcon>logo_128.png</PackageIcon>
+        <AssemblyVersion>0.0.3</AssemblyVersion>
+        <Copyright>Copyright (c) 2023 Kirill Danshin</Copyright>
         <RepositoryUrl>https://github.com/KillDNS-Captcha-Solver/connector-in-memory</RepositoryUrl>
-        <AssemblyVersion>0.0.2</AssemblyVersion>
+        <PackageProjectUrl>https://github.com/KillDNS-Captcha-Solver/connector-in-memory</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="KillDNS.CaptchaSolver.Core" Version="0.0.1" />
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+        </AssemblyAttribute>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="logo_128.png">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-      </None>
-      <None Include="..\resources\logo_128.png">
-        <Pack>True</Pack>
-        <PackagePath></PackagePath>
-        <Link>logo_128.png</Link>
-      </None>
+        <None Update="resources\logo_128.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+        <None Include="..\resources\logo_128.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+            <Link>logo_128.png</Link>
+        </None>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\LICENSE" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="KillDNS.CaptchaSolver.Core" Version="0.0.7" />
     </ItemGroup>
 </Project>

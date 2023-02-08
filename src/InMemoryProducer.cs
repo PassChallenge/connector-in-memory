@@ -13,14 +13,17 @@ public class InMemoryProducer : ProducerWithSpecifiedCaptchaAndSolutions, IProdu
 
     public InMemoryProducer(IServiceProvider serviceProvider)
     {
-        _serviceProvider = serviceProvider;
+        _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 
     public override Task<TSolution> ProduceAndWaitSolution<TCaptcha, TSolution>(TCaptcha captcha,
         CancellationToken cancellationToken = default)
     {
         if (_captchaHandlerFactory == null)
-            throw new InvalidOperationException($"{nameof(_captchaHandlerFactory)} is null.");
+            throw new InvalidOperationException("Captcha handler factory is not set.");
+        
+        if (captcha == null) 
+            throw new ArgumentNullException(nameof(captcha));
 
         var messageHandler = _captchaHandlerFactory.CreateHandler<TCaptcha, TSolution>(_serviceProvider);
         return messageHandler.Handle(captcha, cancellationToken);
