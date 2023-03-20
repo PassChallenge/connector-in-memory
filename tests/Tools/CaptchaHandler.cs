@@ -1,13 +1,11 @@
-using KillDNS.CaptchaSolver.Core.Captcha;
-using KillDNS.CaptchaSolver.Core.Handlers;
-using KillDNS.CaptchaSolver.Core.Solutions;
+using PassChallenge.Core.Handlers;
 
-namespace KillDNS.CaptchaSolver.Connectors.InMemory.Tests.Tools;
+namespace PassChallenge.Connectors.InMemory.Tests.Tools;
 
-public class CaptchaHandler : ICaptchaHandler<PictureCaptcha, TextSolution>
+public class ChallengeHandler : IChallengeHandler<TestChallenge, TestSolution>
 {
-    public Task<TextSolution> Handle(PictureCaptcha request, CancellationToken cancellationToken = default)
+    public Task<TestSolution> Handle(TestChallenge challenge, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(new TextSolution("Answer", SolutionResultType.Solved));
+        return Task.FromResult(new TestSolution("Answer"));
     }
 }

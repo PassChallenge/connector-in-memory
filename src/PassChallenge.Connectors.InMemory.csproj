@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>default</LangVersion>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>0.0.4</Version>
+        <Title>PassChallenge.Connectors.InMemory</Title>
+        <Authors>Kirill Danshin</Authors>
+        <Description>Library for process challenges in same application.</Description>
+        <PackageIcon>logo_128.png</PackageIcon>
+        <AssemblyVersion>0.0.4</AssemblyVersion>
+        <Copyright>Copyright (c) 2023 Kirill Danshin</Copyright>
+        <RepositoryUrl>https://github.com/PassChallenge/connector-in-memory</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/PassChallenge/connector-in-memory</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageId>PassChallenge.Connectors.InMemory</PackageId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>$(AssemblyName).Tests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="resources\logo_128.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+        <None Include="..\resources\logo_128.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+            <Link>logo_128.png</Link>
+        </None>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\LICENSE" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="PassChallenge.Core" Version="0.0.9" />
+    </ItemGroup>
+</Project>
