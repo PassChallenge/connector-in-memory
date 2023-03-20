@@ -1,7 +1,7 @@
-using KillDNS.CaptchaSolver.Core.Captcha;
+using PassChallenge.Core.Challenges;
 
-namespace KillDNS.CaptchaSolver.Connectors.InMemory.Tests.Tools;
+namespace PassChallenge.Connectors.InMemory.Tests.Tools;
 
-public class TestCaptcha : ICaptcha
+public class TestChallenge : IChallenge
 {
 }

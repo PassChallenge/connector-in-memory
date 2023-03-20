@@ -1,37 +1,74 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using KillDNS.CaptchaSolver.Core.Handlers;
-using KillDNS.CaptchaSolver.Core.Producer;
+using PassChallenge.Core.Challenges;
+using PassChallenge.Core.Handlers;
+using PassChallenge.Core.Producer;
+using PassChallenge.Core.Solutions;
+using PassChallenge.Core.Solver;
 
-namespace KillDNS.CaptchaSolver.Connectors.InMemory;
+namespace PassChallenge.Connectors.InMemory;
 
-public class InMemoryProducer : ProducerWithSpecifiedCaptchaAndSolutions, IProducerWithCaptchaHandlerFactory
+public class InMemoryProducer : IProducerWithChallengeHandlerFactory
 {
     private readonly IServiceProvider _serviceProvider;
-    private ICaptchaHandlerFactory? _captchaHandlerFactory;
+    private IChallengeHandlerFactory? _challengeHandlerFactory;
 
     public InMemoryProducer(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 
-    public override Task<TSolution> ProduceAndWaitSolution<TCaptcha, TSolution>(TCaptcha captcha,
-        CancellationToken cancellationToken = default)
-    {
-        if (_captchaHandlerFactory == null)
-            throw new InvalidOperationException("Captcha handler factory is not set.");
-        
-        if (captcha == null) 
-            throw new ArgumentNullException(nameof(captcha));
 
-        var messageHandler = _captchaHandlerFactory.CreateHandler<TCaptcha, TSolution>(_serviceProvider);
-        return messageHandler.Handle(captcha, cancellationToken);
+    public void SetAvailableChallengeAndSolutionStorage(
+        IAvailableChallengeAndSolutionStorage availableChallengeAndSolutionStorage)
+    {
     }
 
-    public void SetCaptchaHandlerFactory(ICaptchaHandlerFactory captchaHandlerFactory)
+    public bool CanProduce<TChallenge, TSolution>(string? handlerName = default)
+        where TChallenge : IChallenge where TSolution : ISolution
     {
-        _captchaHandlerFactory =
-            captchaHandlerFactory ?? throw new ArgumentNullException(nameof(captchaHandlerFactory));
+        if (_challengeHandlerFactory == null)
+            throw new InvalidOperationException("Challenge handler factory is not set.");
+
+        return _challengeHandlerFactory.CanProduce<TChallenge, TSolution>(handlerName);
+    }
+
+    public string GetDefaultHandlerName<TChallenge, TSolution>() where TChallenge : IChallenge where TSolution : ISolution
+    {
+        if (_challengeHandlerFactory == null)
+            throw new InvalidOperationException("Challenge handler factory is not set.");
+
+        return _challengeHandlerFactory.GetDefaultHandlerName<TChallenge, TSolution>();
+    }
+
+    public IReadOnlyCollection<string> GetHandlerNames<TChallenge, TSolution>()
+        where TChallenge : IChallenge where TSolution : ISolution
+    {
+        if (_challengeHandlerFactory == null)
+            throw new InvalidOperationException("Challenge handler factory is not set.");
+
+        return _challengeHandlerFactory.GetHandlerNames<TChallenge, TSolution>();
+    }
+
+    public Task<TSolution> ProduceAndWaitSolution<TChallenge, TSolution>(TChallenge challenge, string? handlerName = default,
+        CancellationToken cancellationToken = default) where TChallenge : IChallenge where TSolution : ISolution
+    {
+        if (_challengeHandlerFactory == null)
+            throw new InvalidOperationException("Challenge handler factory is not set.");
+
+        if (challenge == null)
+            throw new ArgumentNullException(nameof(challenge));
+        
+        IChallengeHandler<TChallenge, TSolution> messageHandler =
+            _challengeHandlerFactory.CreateHandler<TChallenge, TSolution>(_serviceProvider, handlerName);
+        return messageHandler.Handle(challenge, cancellationToken);
+    }
+
+    public void SetChallengeHandlerFactory(IChallengeHandlerFactory challengeHandlerFactory)
+    {
+        _challengeHandlerFactory =
+            challengeHandlerFactory ?? throw new ArgumentNullException(nameof(challengeHandlerFactory));
     }
 }

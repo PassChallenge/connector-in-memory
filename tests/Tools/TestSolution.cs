@@ -1,13 +1,18 @@
-using KillDNS.CaptchaSolver.Core.Solutions;
+using PassChallenge.Core.Solutions;
 
-namespace KillDNS.CaptchaSolver.Connectors.InMemory.Tests.Tools;
+namespace PassChallenge.Connectors.InMemory.Tests.Tools;
 
 public class TestSolution : ISolution
 {
-    public TestSolution(SolutionResultType resultType)
+    public TestSolution(string? answer, SolutionResultType resultType = SolutionResultType.Solved)
     {
         ResultType = resultType;
+        Answer = answer;
     }
 
+    public string? Answer { get; }
+
     public SolutionResultType ResultType { get; }
+
+    public string? ErrorMessage { get; }
 }

@@ -1,13 +1,12 @@
-using KillDNS.CaptchaSolver.Connectors.InMemory.Extensions;
-using KillDNS.CaptchaSolver.Connectors.InMemory.Tests.Tools;
-using KillDNS.CaptchaSolver.Core.Captcha;
-using KillDNS.CaptchaSolver.Core.Extensions;
-using KillDNS.CaptchaSolver.Core.Solutions;
-using KillDNS.CaptchaSolver.Core.Solver;
+using PassChallenge.Connectors.InMemory;
+using PassChallenge.Connectors.InMemory.Extensions;
+using PassChallenge.Connectors.InMemory.Tests.Tools;
+using PassChallenge.Core.Extensions;
+using PassChallenge.Core.Solver;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
-namespace KillDNS.CaptchaSolver.Connectors.InMemory.Tests;
+namespace PassChallenge.Connectors.InMemory.Tests;
 
 public class ResolveTests
 {
@@ -15,19 +14,19 @@ public class ResolveTests
     public async Task Resolve_Handler_As_Class_Is_Correct()
     {
         IServiceCollection serviceCollection = new ServiceCollection();
-        serviceCollection.AddCaptchaSolver<InMemoryProducer>(builder =>
+        serviceCollection.AddChallengeSolver<InMemoryProducer>(builder =>
         {
             builder.SetupInMemoryProducer(producerBuilder =>
             {
-                producerBuilder.AddCaptchaHandler<PictureCaptcha, TextSolution, CaptchaHandler>();
+                producerBuilder.DescriptorStorageBuilder
+                    .AddChallengeHandler<TestChallenge, TestSolution, ChallengeHandler>();
             });
         });
 
         IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
-
-        ICaptchaSolverFactory factory = serviceProvider.GetRequiredService<ICaptchaSolverFactory>();
-        ICaptchaSolver<PictureCaptcha, TextSolution> solver = factory.CreateSolver<PictureCaptcha, TextSolution>();
-        TextSolution solution = await solver.Solve(new PictureCaptcha(Array.Empty<byte>()));
+        IChallengeSolverFactory factory = serviceProvider.GetRequiredService<IChallengeSolverFactory>();
+        IChallengeSolver<TestChallenge, TestSolution> solver = factory.CreateSolver<TestChallenge, TestSolution>();
+        TestSolution solution = await solver.Solve(new TestChallenge());
 
         string expected = "Answer";
         string? actual = solution.Answer;
@@ -41,20 +40,21 @@ public class ResolveTests
         string expected = "Answer";
 
         IServiceCollection serviceCollection = new ServiceCollection();
-        serviceCollection.AddCaptchaSolver<InMemoryProducer>(builder =>
+        serviceCollection.AddChallengeSolver<InMemoryProducer>(builder =>
         {
             builder.SetupInMemoryProducer(producerBuilder =>
             {
-                producerBuilder.AddCaptchaHandler<PictureCaptcha, TextSolution>((_, _) =>
-                    Task.FromResult(new TextSolution(expected)));
+                producerBuilder.DescriptorStorageBuilder
+                    .AddChallengeHandler<TestChallenge, TestSolution>((_, _) =>
+                        Task.FromResult(new TestSolution(expected)));
             });
         });
 
         IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 
-        ICaptchaSolverFactory factory = serviceProvider.GetRequiredService<ICaptchaSolverFactory>();
-        ICaptchaSolver<PictureCaptcha, TextSolution> solver = factory.CreateSolver<PictureCaptcha, TextSolution>();
-        TextSolution solution = await solver.Solve(new PictureCaptcha(Array.Empty<byte>()));
+        IChallengeSolverFactory factory = serviceProvider.GetRequiredService<IChallengeSolverFactory>();
+        IChallengeSolver<TestChallenge, TestSolution> solver = factory.CreateSolver<TestChallenge, TestSolution>();
+        TestSolution solution = await solver.Solve(new TestChallenge());
 
         string? actual = solution.Answer;
 
@@ -65,23 +65,26 @@ public class ResolveTests
     public void Resolve_Handler_Is_Not_Registered_Throws_InvalidOperationException()
     {
         IServiceCollection serviceCollection = new ServiceCollection();
-        serviceCollection.AddCaptchaSolver<InMemoryProducer>(builder => { builder.SetupInMemoryProducer(_ => { }); });
+        serviceCollection.AddChallengeSolver<InMemoryProducer>(builder =>
+        {
+            builder.SetupInMemoryProducer(_ => { });
+        });
 
         IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 
-        ICaptchaSolverFactory factory = serviceProvider.GetRequiredService<ICaptchaSolverFactory>();
-        Assert.Throws<InvalidOperationException>(() => factory.CreateSolver<PictureCaptcha, TextSolution>());
+        IChallengeSolverFactory factory = serviceProvider.GetRequiredService<IChallengeSolverFactory>();
+        Assert.Throws<InvalidOperationException>(() => factory.CreateSolver<TestChallenge, TestSolution>());
     }
 
     [Test]
     public void Resolve_Handler_When_Producer_Is_Not_Setup_Throws_InvalidOperationException()
     {
         IServiceCollection serviceCollection = new ServiceCollection();
-        serviceCollection.AddCaptchaSolver<InMemoryProducer>(_ => { });
+        serviceCollection.AddChallengeSolver<InMemoryProducer>(_ => { });
 
         IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 
-        ICaptchaSolverFactory factory = serviceProvider.GetRequiredService<ICaptchaSolverFactory>();
-        Assert.Throws<InvalidOperationException>(() => factory.CreateSolver<PictureCaptcha, TextSolution>());
+        IChallengeSolverFactory factory = serviceProvider.GetRequiredService<IChallengeSolverFactory>();
+        Assert.Throws<InvalidOperationException>(() => factory.CreateSolver<TestChallenge, TestSolution>());
     }
 }
